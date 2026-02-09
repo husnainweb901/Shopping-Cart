@@ -1,5 +1,6 @@
 package com.lms.shoppingcart.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lms.shoppingcart.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class Category {
     private Long categoryId;
     private String categoryName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> product;
 

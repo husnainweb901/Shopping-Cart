@@ -2,10 +2,15 @@ package com.lms.shoppingcart.product;
 
 import com.lms.shoppingcart.category.Category;
 import com.lms.shoppingcart.category.CategoryRepository;
+import com.lms.shoppingcart.dto.ImageDto;
+import com.lms.shoppingcart.dto.ProductDto;
 import com.lms.shoppingcart.exception.ProductNotFoundException;
+import com.lms.shoppingcart.image.Image;
+import com.lms.shoppingcart.image.ImageRepository;
 import com.lms.shoppingcart.request.AddProductRequest;
 import com.lms.shoppingcart.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +23,8 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -54,22 +61,22 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public List<Product> getProductByBrand(String brand) {
+    public List<Product> getProductsByBrand(String brand) {
         return productRepository.findByBrand(brand);
     }
 
     @Override
-    public List<Product> getProductByBrandAndCategory(String brand, String categoryName) {
+    public List<Product> getProductsByBrandAndCategory(String brand, String categoryName) {
         return productRepository.findByBrandAndCategory_CategoryName(brand, categoryName);
     }
 
     @Override
-    public List<Product> getProductByName(String productName) {
+    public List<Product> getProductsByName(String productName) {
         return productRepository.findProductByProductName(productName);
     }
 
     @Override
-    public List<Product> getProductByNameAndBrand(String productName, String brand) {
+    public List<Product> getProductsByNameAndBrand(String productName, String brand) {
         return productRepository.findByProductNameAndBrand(productName, brand);
     }
 
@@ -111,4 +118,22 @@ public class ProductService implements IProductService {
     public Long countProductByBrandName(String brand, String productName) {
         return productRepository.countByBrandAndProductName(brand, productName);
     }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products)
+    {
+        return products.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product){
+        ProductDto productDto = modelMapper.map(product,ProductDto.class);
+        List<Image> images = imageRepository.findByProduct_ProductId(product.getProductId());
+        List<ImageDto> imageDtos = images.stream()
+                .map(image -> modelMapper.map(image,ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
+    }
+
 }

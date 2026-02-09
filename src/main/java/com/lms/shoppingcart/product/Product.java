@@ -1,5 +1,6 @@
 package com.lms.shoppingcart.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.lms.shoppingcart.category.Category;
 import com.lms.shoppingcart.image.Image;
 import jakarta.persistence.*;
@@ -28,6 +29,7 @@ public class Product {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonBackReference
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

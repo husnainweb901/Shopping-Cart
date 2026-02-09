@@ -1,6 +1,7 @@
 package com.lms.shoppingcart.image;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.lms.shoppingcart.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,6 @@ public class Image {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
     private Product product;
 }
