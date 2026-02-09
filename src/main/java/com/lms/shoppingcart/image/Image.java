@@ -20,7 +20,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
     private String fileName;
-    private String path;
+    private String downloadUrl;
     private String fileType;
 
     @Lob

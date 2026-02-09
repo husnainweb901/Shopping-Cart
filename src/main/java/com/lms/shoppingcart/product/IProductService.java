@@ -1,6 +1,7 @@
 package com.lms.shoppingcart.product;
 
 import com.lms.shoppingcart.request.AddProductRequest;
+import com.lms.shoppingcart.request.ProductUpdateRequest;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ public interface IProductService {
     List<Product> getProductByNameAndBrand(String productName, String brand);
     Product getProductById(Long id);
     void deleteProductById(Long Id);
-    void updateProductById(Product product,Long id);
+    Product updateProductById(ProductUpdateRequest request, Long id);
     Long countProductByBrandName(String brand, String productName);
 }

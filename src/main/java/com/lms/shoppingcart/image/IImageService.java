@@ -1,8 +1,13 @@
 package com.lms.shoppingcart.image;
 
+import com.lms.shoppingcart.dto.ImageDto;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public interface IImageService {
-    Image addImage(Image image);
-    List<Image> GetAllImageOfProduct();
+    Image getImageById(Long id);
+    void deleteImageById(Long id);
+    List<ImageDto> saveImage(List<MultipartFile> files, Long productId);
+    void updateImage(MultipartFile file, Long imageId);
 }

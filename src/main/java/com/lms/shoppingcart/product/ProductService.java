@@ -4,6 +4,7 @@ import com.lms.shoppingcart.category.Category;
 import com.lms.shoppingcart.category.CategoryRepository;
 import com.lms.shoppingcart.exception.ProductNotFoundException;
 import com.lms.shoppingcart.request.AddProductRequest;
+import com.lms.shoppingcart.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService implements IProductService{
+public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -22,7 +23,7 @@ public class ProductService implements IProductService{
     public Product addProduct(AddProductRequest request) {
 
         Category category = Optional.ofNullable(categoryRepository.findByCategoryName(request.getCategory().getCategoryName()))
-                .orElseGet(()-> {
+                .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getCategoryName());
                     return categoryRepository.save(newCategory);
                 });
@@ -30,8 +31,7 @@ public class ProductService implements IProductService{
         return productRepository.save(createProduct(request, category));
     }
 
-    private Product createProduct(AddProductRequest request, Category category)
-    {
+    private Product createProduct(AddProductRequest request, Category category) {
         return new Product(
                 request.getBrand(),
                 category,
@@ -53,7 +53,6 @@ public class ProductService implements IProductService{
     }
 
 
-
     @Override
     public List<Product> getProductByBrand(String brand) {
         return productRepository.findByBrand(brand);
@@ -61,7 +60,7 @@ public class ProductService implements IProductService{
 
     @Override
     public List<Product> getProductByBrandAndCategory(String brand, String categoryName) {
-        return productRepository.findByBrandAndCategory_CategoryName(brand,categoryName);
+        return productRepository.findByBrandAndCategory_CategoryName(brand, categoryName);
     }
 
     @Override
@@ -83,12 +82,29 @@ public class ProductService implements IProductService{
     @Override
     public void deleteProductById(Long id) {
         productRepository.findById(id).ifPresentOrElse(productRepository::delete,
-                ()->{throw new ProductNotFoundException("Product Not Found");});
+                () -> {
+                    throw new ProductNotFoundException("Product Not Found");
+                });
     }
 
     @Override
-    public void updateProductById(Product product,Long Id) {
+    public Product updateProductById(ProductUpdateRequest request, Long id) {
+        return productRepository.findById(id)
+                .map(existingProduct -> updateExistingProduct(existingProduct,request))
+                .map(productRepository :: save)
+                .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
+    }
 
+    public Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request){
+        existingProduct.setProductName(request.getProductName());
+        existingProduct.setBrand(request.getBrand());
+        existingProduct.setDescription(request.getDescription());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setInventory(request.getInventory());
+        Category category = categoryRepository.findByCategoryName(request.getCategory().getCategoryName());
+        existingProduct.setCategory(category);
+
+        return existingProduct;
     }
 
     @Override
