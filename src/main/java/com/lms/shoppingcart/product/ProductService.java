@@ -4,6 +4,7 @@ import com.lms.shoppingcart.category.Category;
 import com.lms.shoppingcart.category.CategoryRepository;
 import com.lms.shoppingcart.dto.ImageDto;
 import com.lms.shoppingcart.dto.ProductDto;
+import com.lms.shoppingcart.exception.AlreadyExistsException;
 import com.lms.shoppingcart.exception.ProductNotFoundException;
 import com.lms.shoppingcart.image.Image;
 import com.lms.shoppingcart.image.ImageRepository;
@@ -29,6 +30,11 @@ public class ProductService implements IProductService {
     @Override
     public Product addProduct(AddProductRequest request) {
 
+        if(productExists(request.getBrand(), request.getProductName()))
+        {
+            throw new AlreadyExistsException(request.getBrand() +" "+ request.getProductName()+ " Already Exists");
+        }
+
         Category category = Optional.ofNullable(categoryRepository.findByCategoryName(request.getCategory().getCategoryName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getCategoryName());
@@ -38,6 +44,10 @@ public class ProductService implements IProductService {
         return productRepository.save(createProduct(request, category));
     }
 
+    private boolean productExists( String brand,String productName)
+    {
+        return productRepository.existsProductByBrandAndProductName(brand,productName);
+    }
     private Product createProduct(AddProductRequest request, Category category) {
         return new Product(
                 request.getBrand(),

@@ -1,6 +1,7 @@
 package com.lms.shoppingcart.orderItem;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lms.shoppingcart.order.Order;
 import com.lms.shoppingcart.product.Product;
 import jakarta.persistence.*;
@@ -22,6 +23,8 @@ public class OrderItem {
     private Long orderItemId;
     private  int quantity;
     private BigDecimal price;
+
+
 
     @ManyToOne
     @JoinColumn(name = "order_id")

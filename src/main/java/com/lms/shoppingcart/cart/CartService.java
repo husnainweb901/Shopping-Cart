@@ -2,11 +2,14 @@ package com.lms.shoppingcart.cart;
 
 import com.lms.shoppingcart.cartItem.CartItemRepository;
 import com.lms.shoppingcart.exception.CartNotFoundException;
+import com.lms.shoppingcart.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.UnknownServiceException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -40,17 +43,17 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-
-        newCart.setTotalAmount(BigDecimal.ZERO);
-        Cart saved = cartRepository.save(newCart);
-        return saved.getCartID();
+    public Cart initializeNewCart(User user) {
+        return Optional.ofNullable(getCartByUserId(user.getUserId()))
+                .orElseGet(()->{
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepository.save(cart);
+                });
     }
 
     @Override
     public Cart getCartByUserId(Long userId) {
-
         return cartRepository.findByUser_UserId(userId);
     }
 }

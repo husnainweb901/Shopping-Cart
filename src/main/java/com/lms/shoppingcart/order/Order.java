@@ -20,7 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Order {
+@Table(name = "orders")
+public class Order{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;

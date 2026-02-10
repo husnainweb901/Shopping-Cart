@@ -1,5 +1,7 @@
 package com.lms.shoppingcart.cart;
 
+import com.lms.shoppingcart.user.User;
+
 import java.math.BigDecimal;
 
 public interface ICartService {
@@ -7,7 +9,7 @@ public interface ICartService {
     void clearCart(Long cartId);
     BigDecimal getTotalPrice(Long cartId);
 
-    Long initializeNewCart();
+    Cart initializeNewCart(User user);
 
     Cart getCartByUserId(Long userId);
 }

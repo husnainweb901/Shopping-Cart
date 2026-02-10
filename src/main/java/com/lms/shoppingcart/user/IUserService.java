@@ -1,5 +1,6 @@
 package com.lms.shoppingcart.user;
 
+import com.lms.shoppingcart.dto.UserDto;
 import com.lms.shoppingcart.request.CreatUserRequest;
 import com.lms.shoppingcart.request.UserUpdateRequest;
 
@@ -9,4 +10,6 @@ public interface IUserService{
     User createUser(CreatUserRequest user);
     User updateUser(UserUpdateRequest request, Long userId);
     void deleteUser(Long userId);
+
+    UserDto convertUserToDto(User user);
 }
