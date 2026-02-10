@@ -2,6 +2,7 @@ package com.lms.shoppingcart.cart;
 
 import com.lms.shoppingcart.cartItem.CartItemRepository;
 import com.lms.shoppingcart.exception.CartNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class CartService implements ICartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void clearCart(Long cartId) {
         Cart cart = getCart(cartId);
@@ -44,5 +46,11 @@ public class CartService implements ICartService {
         newCart.setTotalAmount(BigDecimal.ZERO);
         Cart saved = cartRepository.save(newCart);
         return saved.getCartID();
+    }
+
+    @Override
+    public Cart getCartByUserId(Long userId) {
+
+        return cartRepository.findByUser_UserId(userId);
     }
 }
